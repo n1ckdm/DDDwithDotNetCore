@@ -30,10 +30,10 @@ namespace Marketplace.Domain
         }
 
         public UserId OwnerId { get; }
-        public ClassifiedAdTitle Title { get; private set; }
-        public ClassifiedAdText Text { get; private set; }
-        public Price Price { get; private set; }
-        public UserId ApprovedBy { get; private set; }
+        public ClassifiedAdTitle? Title { get; private set; }
+        public ClassifiedAdText? Text { get; private set; }
+        public Price? Price { get; private set; }
+        public UserId? ApprovedBy { get; private set; }
         public ClassifiedAdState State { get; private set; }
 
         public enum ClassifiedAdState
