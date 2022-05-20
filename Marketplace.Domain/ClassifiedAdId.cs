@@ -2,7 +2,7 @@ using System;
 
 namespace Marketplace.Domain
 {
-    public class ClassifiedAdId
+    public record ClassifiedAdId
     {
         private readonly Guid _value;
 
