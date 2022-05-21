@@ -5,16 +5,16 @@ namespace Marketplace.Domain
     public record ClassifiedAdTitle
     {
         public static ClassifiedAdTitle FromString(string title) => new ClassifiedAdTitle(title);
-        private readonly string _value;
+        public string Value { get; }
 
-        private ClassifiedAdTitle(string value)
+        internal ClassifiedAdTitle(string title)
         {
-            if (value.Length > 100)
-                throw new ArgumentOutOfRangeException("Title cannot be longer thn 100 characters", nameof(value));
+            if (title.Length > 100)
+                throw new ArgumentOutOfRangeException("Title cannot be longer thn 100 characters", nameof(title));
             
-            _value = value;
+            Value = title;
         }
 
-        public static implicit operator string(ClassifiedAdTitle self) => self._value;
+        public static implicit operator string(ClassifiedAdTitle self) => self.Value;
     }
 }

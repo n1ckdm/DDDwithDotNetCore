@@ -7,12 +7,19 @@ namespace Marketplace.Tests
     public class ClassifiedAd_Publish_Spec
     {
         private readonly ClassifiedAd _classifiedAd;
+        private readonly Guid _id = Guid.NewGuid();
         public ClassifiedAd_Publish_Spec()
         {
             _classifiedAd = new ClassifiedAd(
-                new ClassifiedAdId(Guid.NewGuid()),
+                new ClassifiedAdId(_id),
                 new UserId(Guid.NewGuid())
             );
+        }
+
+        [Fact]
+        public void Can_create_an_ad_instance()
+        {
+            Assert.Equal(_classifiedAd.Id, _id);
         }
 
         [Fact]

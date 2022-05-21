@@ -5,13 +5,10 @@ namespace Marketplace.Domain
     public record ClassifiedAdText
     {
         public static ClassifiedAdText FromString(string text) => new ClassifiedAdText(text);
-        private readonly string _value;
+        public string Value { get; }
 
-        private ClassifiedAdText(string value)
-        {
-            _value = value;
-        }
+        internal ClassifiedAdText(string text) => Value = text;
 
-        public static implicit operator string(ClassifiedAdText self) => self._value;
+        public static implicit operator string(ClassifiedAdText self) => self.Value;
     }
 }
