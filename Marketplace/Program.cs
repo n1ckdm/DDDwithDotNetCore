@@ -1,4 +1,5 @@
 using Microsoft.OpenApi.Models;
+using Marketplace.Api;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,7 @@ builder.Services.AddSwaggerGen(opts =>
         Title = "ClassifiedAds"
     });
 });
+builder.Services.AddSingleton(new ClassifiedAdsApplicationService());
 
 var app = builder.Build();
 
@@ -26,7 +28,7 @@ if (!app.Environment.IsDevelopment())
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 app.MapControllers();
 // app.UseAuthorization();
 
