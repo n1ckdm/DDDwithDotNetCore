@@ -1,34 +1,33 @@
-using System.IO;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using static System.Environment;
-using static System.Reflection.Assembly;
+using Microsoft.OpenApi.Models;
 
-namespace Marketplace
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(opts => 
 {
-    static class Program
+    opts.SwaggerDoc("v1", new OpenApiInfo
     {
-        static Program() => Path.GetDirectoryName(GetEntryAssembly().Location);
+        Version = "v1",
+        Title = "ClassifiedAds"
+    });
+});
 
-        public static void Main(string[] args)
-        {
-            var configuration = BuildConfiguration(args);
-            ConfigureWebHost(configuration).Build().Run();
-        }
+var app = builder.Build();
 
-        private static IConfiguration BuildConfiguration(String[] args)
-            => new ConfigurationBuilder()
-                .SetBasePath(CurrentDirectory)
-                .Build();
-
-        private static IWebHostBuilder ConfigureWebHost(
-            IConfiguration configuration
-        ) => new WebHostBuilder()
-                .UseStartup<Startup>()
-                .UseConfiguration(configuration)
-                .ConfigureServices(services => services.AddSingleton(configuration))
-                .UseContentRoot(CurrentDirectory)
-                .UseKestrel();
-    }
+// Configure the HTTP request pipeline.
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Error");
+    app.UseHsts();
 }
+
+app.UseSwagger();
+app.UseSwaggerUI();
+
+app.UseHttpsRedirection();
+app.MapControllers();
+// app.UseAuthorization();
+
+app.Run();
