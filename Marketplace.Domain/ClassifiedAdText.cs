@@ -10,5 +10,6 @@ namespace Marketplace.Domain
         internal ClassifiedAdText(string text) => Value = text;
 
         public static implicit operator string(ClassifiedAdText self) => self.Value;
+        public override string ToString() => Value.ToString();
     }
 }

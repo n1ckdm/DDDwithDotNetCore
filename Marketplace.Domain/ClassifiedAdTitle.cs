@@ -1,5 +1,3 @@
-using System;
-
 namespace Marketplace.Domain
 {
     public record ClassifiedAdTitle
@@ -7,7 +5,7 @@ namespace Marketplace.Domain
         public static ClassifiedAdTitle FromString(string title) => new ClassifiedAdTitle(title);
         public string Value { get; }
 
-        internal ClassifiedAdTitle(string title)
+        public ClassifiedAdTitle(string title)
         {
             if (title.Length > 100)
                 throw new ArgumentOutOfRangeException("Title cannot be longer thn 100 characters", nameof(title));
@@ -16,5 +14,6 @@ namespace Marketplace.Domain
         }
 
         public static implicit operator string(ClassifiedAdTitle self) => self.Value;
+        public override string ToString() => Value.ToString();
     }
 }

@@ -28,13 +28,13 @@ namespace Marketplace.Domain
             Currency = currency;
         }
 
-        protected Money(decimal amount, CurrencyDetails currency)
+        protected Money(decimal amount, Currency currency)
         {
             Amount = amount;
             Currency = currency;
         }
         public decimal Amount { get; }
-        public CurrencyDetails Currency { get; }
+        public Currency Currency { get; }
         public Money Add(Money summand)
         {
             if (Currency != summand.Currency)

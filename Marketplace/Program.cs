@@ -1,5 +1,9 @@
 using Microsoft.OpenApi.Models;
 using Marketplace.Api;
+using Marketplace.Domain;
+using Raven.Client;
+using Raven.Client.Documents;
+using Raven.Client.Documents.Session;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +18,24 @@ builder.Services.AddSwaggerGen(opts =>
         Title = "ClassifiedAds"
     });
 });
-builder.Services.AddSingleton(new ClassifiedAdsApplicationService());
+
+var store = new DocumentStore
+{
+    Urls = new[] {"http://localhost:8080"},
+    Database = "Marketplace",
+    Conventions =
+    {
+        FindIdentityProperty = m => m.Name == "_databaseId"
+    }
+};
+store.Conventions.RegisterAsyncIdConvention<ClassifiedAd>(
+    (dbName, entity) => Task.FromResult("ClassifiedAd/" + entity.Id.ToString()));
+store.Initialize();
+
+builder.Services.AddTransient(c => store.OpenAsyncSession());
+builder.Services.AddScoped<ICurrencyLookup, Marketplace.FixedCurrencyLookup>();
+builder.Services.AddScoped<IClassifiedAdRepository, Marketplace.ClassifiedAdRepository>();
+builder.Services.AddScoped<ClassifiedAdsApplicationService>();
 
 var app = builder.Build();
 

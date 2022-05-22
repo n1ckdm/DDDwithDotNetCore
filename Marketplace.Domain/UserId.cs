@@ -4,15 +4,20 @@ namespace Marketplace.Domain
 {
     public class UserId
     {
-        private readonly Guid _value;
+        public Guid Value { get; }
 
         public UserId(Guid value)
         {
             if (value == default)
-                throw new ArgumentNullException(nameof(value), "User id cannot be empty");
-            _value = value;
+                throw new ArgumentNullException(nameof(value), "UserId id cannot be empty");
+            Value = value;
         }
 
-        public static implicit operator Guid(UserId self) => self._value;
+        public override string ToString() => Value.ToString();
+
+        public static implicit operator Guid(UserId self) => self.Value;
+        
+        public static implicit operator UserId(string value) 
+            => new UserId(Guid.Parse(value));
     }
 }
