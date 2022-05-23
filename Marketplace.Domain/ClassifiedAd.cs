@@ -6,7 +6,6 @@ namespace Marketplace.Domain
 {
     public class ClassifiedAd : AggregateRoot<ClassifiedAdId>
     {
-        // public ClassifiedAdId Id { get; private set; }
         public UserId OwnerId { get; private set; }
         public ClassifiedAdTitle Title { get; private set; }
         public ClassifiedAdText Text { get; private set; }
@@ -14,8 +13,11 @@ namespace Marketplace.Domain
         public UserId ApprovedBy { get; private set; }
         public ClassifiedAdState State { get; private set; }
 
+        public List<Picture> Pictures { get; private set; }
+
         public ClassifiedAd(ClassifiedAdId id, UserId ownerId)
         {
+            Pictures = new List<Picture>();
             Apply(new Events.ClassifiedAdCreated
             {
                 Id = id,
@@ -54,6 +56,16 @@ namespace Marketplace.Domain
             });
         }
 
+        public void AddPicture(Uri pictureUri, PictureSize size) =>
+            Apply(new Events.PictureAddedToAClassifiedAd
+            {
+                PictureId = new Guid(),
+                ClassifiedAdId = Id,
+                Url = pictureUri.ToString(),
+                Height = size.Height,
+                Width = size.Width
+            });
+
         protected override void When(object @event)
         {
             switch (@event)
@@ -74,6 +86,15 @@ namespace Marketplace.Domain
                     break;
                 case Events.ClassifiedAdSentForReview e:
                     State = ClassifiedAdState.PendingReview;
+                    break;
+                case Events.PictureAddedToAClassifiedAd e:
+                    var newPicture = new Picture
+                    {
+                        Size = new PictureSize(e.Width, e.Height),
+                        Location = new Uri(e.Url),
+                        Order = Pictures.Max(x => x.Order) + 1
+                    };
+                    Pictures.Add(newPicture);
                     break;
             }
         }
