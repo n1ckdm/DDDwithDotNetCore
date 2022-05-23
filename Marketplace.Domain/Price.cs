@@ -14,6 +14,8 @@ namespace Marketplace.Domain
                 throw new ArgumentException("Price cannot be nagative", nameof(amount));
         }
 
+        protected Price() {}
+
         internal Price(decimal amount, string currencyCode)
             : base(amount, new Currency{CurrencyCode = currencyCode}) {}
 

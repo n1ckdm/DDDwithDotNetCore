@@ -5,6 +5,8 @@ namespace Marketplace.Domain
         public static ClassifiedAdTitle FromString(string title) => new ClassifiedAdTitle(title);
         public string Value { get; }
 
+        protected ClassifiedAdTitle() {}
+
         public ClassifiedAdTitle(string title)
         {
             if (title.Length > 100)

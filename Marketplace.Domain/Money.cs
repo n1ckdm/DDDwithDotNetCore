@@ -11,6 +11,9 @@ namespace Marketplace.Domain
             string amount,
             string currency,
             ICurrencyLookup currencyLookup) => new Money(decimal.Parse(amount), currency, currencyLookup);
+
+        protected Money() {}
+
         protected Money(decimal amount, string currencyCode, ICurrencyLookup currencyLookup)
         {
             if (string.IsNullOrEmpty(currencyCode))
