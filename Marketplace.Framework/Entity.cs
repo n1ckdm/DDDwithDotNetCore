@@ -3,8 +3,9 @@ using System.Linq;
 
 namespace Marketplace.Framework
 {
-    public abstract class Entity
+    public abstract class Entity<TId>
     {
+        public TId Id { get; protected set; }
         private readonly List<object> _events;
 
         protected Entity() => _events = new List<object>();

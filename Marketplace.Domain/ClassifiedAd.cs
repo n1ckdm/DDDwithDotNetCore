@@ -1,11 +1,12 @@
 using System;
 using Marketplace.Framework;
+using static Marketplace.Domain.Events;
 
 namespace Marketplace.Domain
 {
-    public class ClassifiedAd : Entity
+    public class ClassifiedAd : AggregateRoot<ClassifiedAdId>
     {
-        public ClassifiedAdId Id { get; private set; }
+        // public ClassifiedAdId Id { get; private set; }
         public UserId OwnerId { get; private set; }
         public ClassifiedAdTitle Title { get; private set; }
         public ClassifiedAdText Text { get; private set; }
