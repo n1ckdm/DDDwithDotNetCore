@@ -63,8 +63,20 @@ namespace Marketplace.Domain
                 ClassifiedAdId = Id,
                 Url = pictureUri.ToString(),
                 Height = size.Height,
-                Width = size.Width
+                Width = size.Width,
+                Order = Pictures.Max(x => x.Order)
             });
+
+        public void ResizePicture(PictureId pictureId, PictureSize newSize)
+        {
+            var picture = FindPicture(pictureId);
+            if (picture == null)
+                throw new InvalidOperationException("Cannot resize picture that is null");
+            picture.Resize(newSize);
+        }
+
+        private Picture FindPicture(PictureId id)
+            => Pictures.FirstOrDefault(x => x.Id == id);
 
         protected override void When(object @event)
         {
@@ -88,16 +100,14 @@ namespace Marketplace.Domain
                     State = ClassifiedAdState.PendingReview;
                     break;
                 case Events.PictureAddedToAClassifiedAd e:
-                    var newPicture = new Picture
-                    {
-                        Size = new PictureSize(e.Width, e.Height),
-                        Location = new Uri(e.Url),
-                        Order = Pictures.Max(x => x.Order) + 1
-                    };
-                    Pictures.Add(newPicture);
+                    var picture = new Picture(Apply);
+                    ApplyToEntity(picture, e);
+                    Pictures.Add(picture);
                     break;
             }
         }
+
+        private Picture FirstPicture => Pictures.OrderBy(x => x.Order).FirstOrDefault();
 
         protected override void EnsureValidState() 
         {
@@ -109,12 +119,14 @@ namespace Marketplace.Domain
                     ClassifiedAdState.PendingReview =>
                         Title != null &&
                         Text != null &&
-                        Price?.Amount > 0,
+                        Price?.Amount > 0 &&
+                        FirstPicture.HasCorrectSize(),
                     ClassifiedAdState.Active =>
                         Title != null &&
                         Text != null &&
                         Price?.Amount > 0 &&
-                        ApprovedBy != null,
+                        ApprovedBy != null &&
+                        FirstPicture.HasCorrectSize(),
                     _ => true
                 });
             
