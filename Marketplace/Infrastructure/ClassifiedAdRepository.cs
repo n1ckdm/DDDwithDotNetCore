@@ -1,10 +1,9 @@
 using Marketplace.Domain;
 using Raven.Client.Documents.Session;
 
-namespace Marketplace
+namespace Marketplace.Infrastructure
 {
-    public class ClassifiedAdRepository 
-        : IClassifiedAdRepository, IDisposable
+    public class ClassifiedAdRepository : IClassifiedAdRepository
     {
         private readonly IAsyncDocumentSession _session;
 
@@ -16,13 +15,10 @@ namespace Marketplace
         public Task<ClassifiedAd> Load(ClassifiedAdId id)
             => _session.LoadAsync<ClassifiedAd>(EntityId(id));
 
-        public async Task Save(ClassifiedAd entity)
+        public async Task Add(ClassifiedAd entity)
         {
             await _session.StoreAsync(entity, EntityId(entity.Id));
-            await _session.SaveChangesAsync();
         }
-
-        public void Dispose() => _session.Dispose();
         
         private static string EntityId(ClassifiedAdId id) => $"ClassifiedAd/{id}";
     }

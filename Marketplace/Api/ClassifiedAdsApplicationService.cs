@@ -7,13 +7,17 @@ namespace Marketplace.Api
     public class ClassifiedAdsApplicationService : IApplicationService
     {
         private readonly IClassifiedAdRepository _repository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly ICurrencyLookup _currencyLookup;
 
         public ClassifiedAdsApplicationService(
-            IClassifiedAdRepository repository, ICurrencyLookup currencyLookup
+            IClassifiedAdRepository repository,
+            IUnitOfWork unitOfWork,
+            ICurrencyLookup currencyLookup
         )
         {
             _repository = repository;
+            _unitOfWork = unitOfWork;
             _currencyLookup = currencyLookup;
         }
 
@@ -27,7 +31,8 @@ namespace Marketplace.Api
             if (await _repository.Exists(classifiedAd.Id))
                 throw new InvalidOperationException($"Entity with id {cmd.Id} already exists");
 
-            await _repository.Save(classifiedAd);
+            await _repository.Add(classifiedAd);
+            await _unitOfWork.Commit();
         }
 
         private async Task HandleUpdate(Guid classifiedAdId, Action<ClassifiedAd> operation)
@@ -39,7 +44,7 @@ namespace Marketplace.Api
 
             operation(classifiedAd);
 
-            await _repository.Save(classifiedAd);
+            await _unitOfWork.Commit();
         }
 
         public Task Handle(object command) =>

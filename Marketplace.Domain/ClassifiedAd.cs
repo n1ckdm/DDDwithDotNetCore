@@ -136,6 +136,12 @@ namespace Marketplace.Domain
                 );
         }
 
+        private string DbId
+        {
+            get => $"ClassifiedAd/{Id.Value}";
+            set {}
+        }
+
         public enum ClassifiedAdState
         {
             PendingReview,
